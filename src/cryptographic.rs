@@ -8,8 +8,8 @@ pub mod cryptographic {
         Vec192([u8; 192])
     }
 
-    pub fn prf<const N: usize>(s: [u8; 4], b: u8) -> ReturnVec { 
-        assert!(N == 2 || N == 3, "n should be 2 or 3");
+    pub fn prf(eta: usize, s: [u8; 4], b: u8) -> ReturnVec { 
+        assert!(eta == 2 || eta == 3, "n should be 2 or 3");
 
         let mut hasher = Shake256::default();
         hasher.update(&s);
@@ -17,7 +17,7 @@ pub mod cryptographic {
         
         let mut reader = hasher.finalize_xof();
 
-        if N == 2 {
+        if eta == 2 {
             let mut output = [0u8; 128];
             reader.read(&mut output).expect("Failed");
             return ReturnVec::Vec128(output);
