@@ -51,7 +51,8 @@ pub mod cryptographic {
         Update::update(&mut hasher, &c);
 
         let hash: [u8; 64] = hasher.finalize().into();
-
-        return (hash[0..32].try_into().unwrap(), hash[32..64].try_into().unwrap())
+        let (left, right) = hash.split_at(32);
+        let tuple = (left.try_into().unwrap(), right.try_into().unwrap());
+        return tuple
     }
 }
