@@ -1,14 +1,14 @@
 pub mod cryptographic {
     use std::{array, io::Read};
 
-    use sha3::{Shake256, digest::{ExtendableOutput, Update}};
+    use sha3::{Digest, Sha3_256, Sha3_512, Shake256, digest::{ExtendableOutput, Update}};
 
     enum ReturnVec {
         Vec128([u8; 128]),
         Vec192([u8; 192])
     }
 
-    fn prf<const N: usize>(s: [u8; 4], b: u8) -> ReturnVec { 
+    pub fn prf<const N: usize>(s: [u8; 4], b: u8) -> ReturnVec { 
         assert!(N == 2 || N == 3, "n should be 2 or 3");
 
         let mut hasher = Shake256::default();
@@ -26,5 +26,32 @@ pub mod cryptographic {
             reader.read(&mut output).expect("Failed");
             return ReturnVec::Vec192(output);
         }
+    }
+
+    pub fn h(s: &[u8]) -> [u8;32] {
+        let mut hasher = Sha3_256::default();
+
+        Update::update(&mut hasher, &s);
+        
+        return hasher.finalize().into();
+    }
+
+    pub fn j(s: &[u8]) -> [u8;32] {
+        let mut hasher = Shake256::default();
+        let mut output = [0u8; 32];
+
+        hasher.update(&s);
+        hasher.finalize_xof_into(&mut output);
+
+        return output;
+    }
+
+    pub fn g(c: &[u8]) -> ([u8;32], [u8;32]) {
+        let mut hasher = Sha3_512::default();
+        Update::update(&mut hasher, &c);
+
+        let hash: [u8; 64] = hasher.finalize().into();
+
+        return (hash[0..32].try_into().unwrap(), hash[32..64].try_into().unwrap())
     }
 }
