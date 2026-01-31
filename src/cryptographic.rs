@@ -7,8 +7,8 @@ enum ReturnVec {
     Vec192([u8; 192])
 }
 
-pub fn prf(eta: usize, s: [u8; 32], b: u8) -> ReturnVec { 
-    assert!(eta == 2 || eta == 3, "n should be 2 or 3");
+pub fn prf<const ETA: usize>(s: [u8; 32], b: u8) -> ReturnVec { 
+    assert!(ETA == 2 || ETA == 3, "n should be 2 or 3");
 
     let mut hasher = Shake256::default();
     hasher.update(&s);
@@ -16,7 +16,7 @@ pub fn prf(eta: usize, s: [u8; 32], b: u8) -> ReturnVec {
     
     let mut reader = hasher.finalize_xof();
 
-    if eta == 2 {
+    if ETA == 2 {
         let mut output = [0u8; 128];
         reader.read(&mut output).expect("Failed");
         return ReturnVec::Vec128(output);
