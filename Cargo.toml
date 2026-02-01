@@ -3,6 +3,14 @@ name = "ml-kem-rs"
 version = "0.1.0"
 edition = "2024"
 
+[lib]
+name = "ml_kem_rs"
+path = "src/lib.rs"
+
+[[bin]]
+name = "ml-kem-rs"
+path = "src/main.rs"
+
 [dependencies]
 getrandom = "0.3.4"
 num-traits = "0.2.19"
