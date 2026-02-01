@@ -2,12 +2,9 @@ use std::{array, io::Read};
 
 use sha3::{Digest, Sha3_256, Sha3_512, Shake256, digest::{ExtendableOutput, Update}};
 
-enum ReturnVec {
-    Vec128([u8; 128]),
-    Vec192([u8; 192])
-}
+use crate::bytevec::ByteVec;
 
-pub fn prf<const ETA: usize>(s: [u8; 32], b: u8) -> ReturnVec { 
+pub fn prf<const ETA: usize>(s: [u8; 32], b: u8) -> ByteVec { 
     assert!(ETA == 2 || ETA == 3, "n should be 2 or 3");
 
     let mut hasher = Shake256::default();
@@ -19,11 +16,11 @@ pub fn prf<const ETA: usize>(s: [u8; 32], b: u8) -> ReturnVec {
     if ETA == 2 {
         let mut output = [0u8; 128];
         reader.read(&mut output).expect("Failed");
-        return ReturnVec::Vec128(output);
+        return ByteVec::Vec128(output);
     } else {
         let mut output = [0u8; 192];
         reader.read(&mut output).expect("Failed");
-        return ReturnVec::Vec192(output);
+        return ByteVec::Vec192(output);
     }
 }
 

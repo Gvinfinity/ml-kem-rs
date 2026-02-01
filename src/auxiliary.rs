@@ -62,3 +62,29 @@ pub const fn bit_rev(n: u8) -> u8 {
     
     LUT[n as usize]
 }
+
+pub fn bytes_to_bits(bytes: &[u8]) -> Vec<u8> {
+    let mut c = bytes.to_vec();
+    let l = bytes.len();
+    let mut b = vec![0u8; l*8];
+    
+    for i in 0..l {
+        for j in 0..8 {
+            b[8*i+j] = c[i] % 2;
+            c[i] = c[i] >> 2;
+        }
+    }
+
+    b
+}
+
+pub fn bits_to_bytes(bits: &[u8]) -> Vec<u8> {
+    let l = bits.len();
+    let mut bytes = vec![0u8;l/8];
+    
+    for i in 0..8*l {
+        bytes[i/8] = bytes[i/8] + bits[i] << (i % 8);
+    }
+
+    bytes
+}

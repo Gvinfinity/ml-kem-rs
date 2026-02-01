@@ -1,7 +1,7 @@
 use std::ops::{Add, Index, IndexMut, Mul, Rem};
 use crate::SELECTED_PARAMETER_SET;
 
-#[derive(Clone, Debug)]
+#[derive(Copy, Clone, Debug)]
 pub struct Polynomial<T: num_traits::PrimInt, const N: usize>([T; N]);
 
 pub type Poly16 = Polynomial<u16, {SELECTED_PARAMETER_SET.n}>;
@@ -82,7 +82,7 @@ impl<T: num_traits::PrimInt, const N: usize> Polynomial<T, N> {
         return Polynomial { 0: coefficients.clone() }
     }
 }
-struct PolynomialIterator<T: num_traits::PrimInt, const N: usize> {
+pub struct PolynomialIterator<T: num_traits::PrimInt, const N: usize> {
     polynomial: Polynomial<T, N>,
     index: usize
 }
