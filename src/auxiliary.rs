@@ -71,7 +71,7 @@ pub fn bytes_to_bits(bytes: &[u8]) -> Vec<u8> {
     for i in 0..l {
         for j in 0..8 {
             b[8*i+j] = c[i] % 2;
-            c[i] = c[i] >> 2;
+            c[i] = c[i] >> 1;
         }
     }
 

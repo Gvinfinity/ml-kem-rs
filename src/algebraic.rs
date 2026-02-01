@@ -15,7 +15,7 @@ pub fn ntt(f: Poly16) -> Poly16 {
             let mut j = start;
             while j  < start + len {
                 let t = ((zeta as u32 * transformed[j + len] as u32) % SELECTED_PARAMETER_SET.q as u32) as u16;
-                transformed[j + len] = ((transformed[j] as i32 - t as i32) % SELECTED_PARAMETER_SET.q as i32) as u16;
+                transformed[j + len] = (transformed[j] as i32 - t as i32).rem_euclid(SELECTED_PARAMETER_SET.q as i32) as u16;
                 transformed[j] = ((transformed[j] as u32 + t as u32) % SELECTED_PARAMETER_SET.q as u32) as u16;
 
                 j += 1;
@@ -46,7 +46,7 @@ pub fn ntt_inv(ft: Poly16) -> Poly16 {
             while j < start + len {
                 let t = inverse[j];
                 inverse[j] = (t + inverse[j + len]) % SELECTED_PARAMETER_SET.q as u16;
-                inverse[j + len] = (zeta*(inverse[j+len] - t)) % SELECTED_PARAMETER_SET.q as u16;
+                inverse[j + len] = (zeta*(inverse[j+len] - t)).rem_euclid(SELECTED_PARAMETER_SET.q as u16);
 
                 j += 1;
             }
@@ -109,7 +109,7 @@ pub fn sample_poly_cbd<const ETA: usize>(bytes: ByteVec) -> Poly16 {
             y += b[2*i*eta + eta + j] as i32;
         }
 
-        f[i] = (((x - y) as i16) % SELECTED_PARAMETER_SET.q as i16) as u16;
+        f[i] = (((x - y) as i16).rem_euclid(SELECTED_PARAMETER_SET.q as i16)) as u16;
 
         i += 1;
     }
